@@ -49,7 +49,6 @@ mysql> SELECT DATABASE();
 
 
 
-
 #UC2
 #(CREATE TABLE in payroll_service DB)
 
