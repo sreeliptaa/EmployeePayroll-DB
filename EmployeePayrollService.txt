@@ -1,0 +1,363 @@
+#################### Welcome to EmployeePayRoll Database ####################
+
+#UC1
+#(CREATE payroll_service DB)
+
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mydb               |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.01 sec)
+
+
+mysql> CREATE DATABASE payroll_Service;
+Query OK, 1 row affected (0.26 sec)
+
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mydb               |
+| mysql              |
+| payroll_service    |
+| performance_schema |
+| sys                |
++--------------------+
+6 rows in set (0.04 sec)
+
+
+mysql> USE payroll_service;
+Database changed
+mysql> SELECT DATABASE();
++-----------------+
+| DATABASE()      |
++-----------------+
+| payroll_service |
++-----------------+
+1 row in set (0.00 sec)
+
+
+
+
+
+
+#UC2
+#(CREATE TABLE in payroll_service DB)
+
+
+mysql> create table employee_payroll(
+    -> id    int unsigned not null auto_increment,
+    -> name  varchar(200) not null,
+    -> salary   double not null,
+    -> start    Date not null,
+    -> primary key (id)
+    -> );
+Query OK, 0 rows affected (2.41 sec)
+
+
+mysql> DESCRIBE employee_payroll;
++--------+--------------+------+-----+---------+----------------+
+| Field  | Type         | Null | Key | Default | Extra          |
++--------+--------------+------+-----+---------+----------------+
+| id     | int unsigned | NO   | PRI | NULL    | auto_increment |
+| name   | varchar(200) | NO   |     | NULL    |                |
+| salary | double       | NO   |     | NULL    |                |
+| start  | date         | NO   |     | NULL    |                |
++--------+--------------+------+-----+---------+----------------+
+4 rows in set (0.10 sec)
+
+
+
+
+
+
+#UC3
+#( INSERT VALUES  to employee_payroll table )
+
+
+mysql> insert into employee_payroll ( name, salary, start ) values
+    ->  ( 'Bill', 1000000.00, '2018-01-03' ),
+    ->  ( 'Terisa', 2000000.00, '2019-11-13' ),
+    ->  ( 'Charlie', 3000000.00, '2020-05-21' );
+Query OK, 3 rows affected (0.24 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+
+
+
+#UC4
+#(RETRIVE ALL THE employee_payroll DATA)
+
+
+mysql> select * from employee_payroll;
++----+---------+---------+------------+
+| id | name    | salary  | start      |
++----+---------+---------+------------+
+|  1 | Bill    | 1000000 | 2018-01-03 |
+|  2 | Terisa  | 2000000 | 2019-11-13 |
+|  3 | Charlie | 3000000 | 2020-05-21 |
++----+---------+---------+------------+
+3 rows in set (0.03 sec)
+
+
+
+
+#UC5
+#(Retrive particular data)
+
+
+
+mysql> select salary from employee_payroll where name = 'Bill';
++---------+
+| salary  |
++---------+
+| 1000000 |
++---------+
+1 row in set (0.00 sec)
+
+mysql> select *  from employee_payroll where start between CAST('2018-01-01' as
+date) and date(NOW());
++----+---------+---------+------------+
+| id | name    | salary  | start      |
++----+---------+---------+------------+
+|  1 | Bill    | 1000000 | 2018-01-03 |
+|  2 | Terisa  | 2000000 | 2019-11-13 |
+|  3 | Charlie | 3000000 | 2020-05-21 |
++----+---------+---------+------------+
+3 rows in set (0.04 sec)
+
+mysql> select *  from employee_payroll where start between CAST('2019-01-01' as
+date) and date(NOW());
++----+---------+---------+------------+
+| id | name    | salary  | start      |
++----+---------+---------+------------+
+|  2 | Terisa  | 2000000 | 2019-11-13 |
+|  3 | Charlie | 3000000 | 2020-05-21 |
++----+---------+---------+------------+
+2 rows in set (0.00 sec)
+
+
+
+
+#UC6
+#(Altering table)
+
+
+mysql> Alter table employee_payroll add gender char(1) after name;
+Query OK, 0 rows affected (3.07 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> describe employee_payroll;
++--------+--------------+------+-----+---------+----------------+
+| Field  | Type         | Null | Key | Default | Extra          |
++--------+--------------+------+-----+---------+----------------+
+| id     | int unsigned | NO   | PRI | NULL    | auto_increment |
+| name   | varchar(200) | NO   |     | NULL    |                |
+| gender | char(1)      | YES  |     | NULL    |                |
+| salary | double       | NO   |     | NULL    |                |
+| start  | date         | NO   |     | NULL    |                |
++--------+--------------+------+-----+---------+----------------+
+5 rows in set (0.04 sec)
+
+mysql> update employee_payroll set gender = 'M' where name = 'bill' or name = 'c
+harlie';
+Query OK, 2 rows affected (0.12 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+mysql> update employee_payroll set gender = 'F' where name = 'Terisa';
+Query OK, 1 row affected (0.19 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+---------+--------+---------+------------+
+| id | name    | gender | salary  | start      |
++----+---------+--------+---------+------------+
+|  1 | Bill    | M      | 1000000 | 2018-01-03 |
+|  2 | Terisa  | F      | 2000000 | 2019-11-13 |
+|  3 | Charlie | M      | 3000000 | 2020-05-21 |
++----+---------+--------+---------+------------+
+3 rows in set (0.00 sec)
+
+
+
+
+#UC7
+#(SUM AVG MIN MAX COUNT)
+
+
+
+mysql> select avg(salary) from employee_payroll where gender = 'M' group by gend
+er;
++-------------+
+| avg(salary) |
++-------------+
+|     2000000 |
++-------------+
+1 row in set (0.03 sec)
+
+mysql> select avg(salary) from employee_payroll  group by gender;
++-------------+
+| avg(salary) |
++-------------+
+|     2000000 |
+|     2000000 |
++-------------+
+2 rows in set (0.04 sec)
+
+mysql> select gender, avg(salary) from employee_payroll group by gender;
++--------+-------------+
+| gender | avg(salary) |
++--------+-------------+
+| M      |     2000000 |
+| F      |     2000000 |
++--------+-------------+
+2 rows in set (0.00 sec)
+
+mysql> select gender, count(name) from employee_payroll group by gender;
++--------+-------------+
+| gender | count(name) |
++--------+-------------+
+| M      |           2 |
+| F      |           1 |
++--------+-------------+
+2 rows in set (0.01 sec)
+
+mysql> select gender, sum(salary) from employee_payroll group by gender;
++--------+-------------+
+| gender | sum(salary) |
++--------+-------------+
+| M      |     4000000 |
+| F      |     2000000 |
++--------+-------------+
+2 rows in set (0.00 sec)
+
+mysql> select sum(salary) from employee_payroll group by gender;
++-------------+
+| sum(salary) |
++-------------+
+|     4000000 |
+|     2000000 |
++-------------+
+2 rows in set (0.00 sec)
+
+mysql> select sum(salary) from employee_payroll where gender = 'M' group by gend
+er;
++-------------+
+| sum(salary) |
++-------------+
+|     4000000 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> select sum(salary) from employee_payroll where gender = 'F' group by gend
+er;
++-------------+
+| sum(salary) |
++-------------+
+|     2000000 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> select min(salary) from employee_payroll where gender = 'M' group by gend
+er;
++-------------+
+| min(salary) |
++-------------+
+|     1000000 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> select min(salary) from employee_payroll where gender = 'F' group by gend
+er;
++-------------+
+| min(salary) |
++-------------+
+|     2000000 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> select gender, min(salary) from employee_payroll group by gender;
++--------+-------------+
+| gender | min(salary) |
++--------+-------------+
+| M      |     1000000 |
+| F      |     2000000 |
++--------+-------------+
+2 rows in set (0.00 sec)
+
+mysql> select max(salary) from employee_payroll where gender = 'M' group by gend
+er;
++-------------+
+| max(salary) |
++-------------+
+|     3000000 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> select max(salary) from employee_payroll where gender = 'F' group by gend
+er;
++-------------+
+| max(salary) |
++-------------+
+|     2000000 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> select gender, max(salary) from employee_payroll group by gender;
++--------+-------------+
+| gender | max(salary) |
++--------+-------------+
+| M      |     3000000 |
+| F      |     2000000 |
++--------+-------------+
+2 rows in set (0.00 sec)
+
+mysql> select gender, count(name) from employee_payroll group by gender;
++--------+-------------+
+| gender | count(name) |
++--------+-------------+
+| M      |           2 |
+| F      |           1 |
++--------+-------------+
+2 rows in set (0.00 sec)
+
+mysql> select count(*) from employee_payroll group by gender;
++----------+
+| count(*) |
++----------+
+|        2 |
+|        1 |
++----------+
+2 rows in set (0.00 sec)
+
+mysql> select count(name) from employee_payroll where gender = 'M' group by gend
+er;
++-------------+
+| count(name) |
++-------------+
+|           2 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> select count(name) from employee_payroll where gender = 'F' group by gend
+er;
++-------------+
+| count(name) |
++-------------+
+|           1 |
++-------------+
+1 row in set (0.00 sec)
+
+
+
+
+
